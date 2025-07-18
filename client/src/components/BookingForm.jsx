@@ -24,7 +24,7 @@ export const BookingForm = ({
     estimatedRideDurationHours: 0
   });
 
-  const [errors, setErrors] = useState<Partial<BookingFormData>>({});
+  const [errors, setErrors] = useState({});
   const [totalCost, setTotalCost] = useState(0);
   const [availabilityMessage, setAvailabilityMessage] = useState('');
 
