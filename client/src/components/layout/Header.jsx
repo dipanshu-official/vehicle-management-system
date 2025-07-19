@@ -1,9 +1,25 @@
-import React from 'react';
-import { Users, Settings, Truck, LogOut } from 'lucide-react';
+import React, { useEffect } from "react";
+import { Users, Settings, Truck, LogOut } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { userDataSelector } from "../../store/globalSelector";
+import { getUserProfileAsync } from "../../store/globalAction";
+import {  useNavigate } from "react-router-dom";
 
+export const Header = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const users = useSelector(userDataSelector); // Assuming user data is stored in global state
+  console.log("user", users);
 
+  useEffect(() => {
+    dispatch(getUserProfileAsync());
+  }, [dispatch]);
 
-export const Header = ({ currentUser, users, onUserSwitch, onLogout }) => {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+    toast.success("Logged out successfully");
+  };
   return (
     <header className="bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,39 +30,27 @@ export const Header = ({ currentUser, users, onUserSwitch, onLogout }) => {
             </div>
             <h1 className="text-xl font-bold text-white">Fleet Link</h1>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <Users className="w-4 h-4 text-white/80" />
-              <select
-                value={currentUser._id}
-                onChange={(e) => {
-                  const user = users.find(u => u._id === e.target.value);
-                  if (user) onUserSwitch(user);
-                }}
-                className="bg-white/10 border border-white/20 rounded-lg px-3 py-1 text-sm text-white placeholder-white/60 focus:ring-2 focus:ring-white/50 focus:border-white/50 backdrop-blur-sm"
-              >
-                {users.map(user => (
-                  <option key={user._id} value={user._id}>
-                    {user.name} ({user.role})
-                  </option>
-                ))}
-              </select>
+              <p>{users.username}</p>
+              
             </div>
-            
+
             <div className="flex items-center space-x-2 text-sm text-white/90">
               <Settings className="w-4 h-4" />
               <span className="font-medium">
-                {currentUser.role === 'admin' ? 'Admin Panel' : 'User Panel'}
+                {users.role === "admin" ? "Admin Panel" : "User Panel"}
               </span>
             </div>
-            
+
             <button
-              onClick={onLogout}
+              onClick={handleLogout}
               className="flex items-center space-x-1 text-white/80 hover:text-white transition-colors bg-white/10 px-3 py-1 rounded-lg hover:bg-white/20"
             >
               <LogOut className="w-4 h-4" />
-              <span className="text-sm">Reset</span>
+              <span className="text-sm">Logout</span>
             </button>
           </div>
         </div>

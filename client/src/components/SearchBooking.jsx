@@ -3,9 +3,6 @@ import { Search, MapPin, Calendar, Filter, Weight, Settings } from 'lucide-react
 import { getVehicles } from '../utils/storage';
 
 
-
-
-
 export const SearchBooking = ({ onBookVehicle }) => {
   const [vehicles, setVehicles] = useState([]);
   const [filteredVehicles, setFilteredVehicles] = useState([]);

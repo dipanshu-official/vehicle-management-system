@@ -5,9 +5,12 @@ import { getVehicles, deleteVehicle } from '../../utils/storage';
 import { VehicleList } from '../../components/VehicleList';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { useLoading } from '../../hooks/useLoading';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllVehicles } from '../../store/globalAction';
+import { vehicleDataSelector } from '../../store/globalSelector';
 
 export const VehicleManagement = () => {
-  const [vehicles, setVehicles] = useState([]);
+  
   const { loading, withLoading } = useLoading();
 
   useEffect(() => {
@@ -16,16 +19,17 @@ export const VehicleManagement = () => {
 
   const loadVehicles = async () => {
     await withLoading(async () => {
-      setVehicles(getVehicles());
+     
     });
   };
 
-  const handleDeleteVehicle = async (vehicleId) => {
-    await withLoading(async () => {
-      deleteVehicle(vehicleId);
-      setVehicles(getVehicles());
-    });
-  };
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllVehicles());
+  }, [dispatch]);
+  const vehicles = useSelector(vehicleDataSelector);
+
 
   if (loading) {
     return <LoadingSpinner size="lg" text="Loading vehicles..." className="py-12" />;
@@ -61,9 +65,7 @@ export const VehicleManagement = () => {
           All Vehicles ({vehicles.length})
         </h2>
         <VehicleList 
-          vehicles={vehicles} 
           showAdminActions={true}
-          onDeleteVehicle={handleDeleteVehicle}
         />
       </div>
     </div>
